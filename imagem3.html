@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Compartilhamento de Imagens com Share.js</title>
+</head>
+<body>
+    <img id="minhaImagem" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCABgALgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD5rooor8DP9oAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACig13Xx18BWfxO8S3Px71CS5h8YeOJY9Ov7O3ZV02KOGIQKYkYGQMVs4iS0jDLPwAQB7mV5PHGQnJ1FFxV7Wu2lv1Vunfc/JPEXxPr8LYrC0Y4CVanWmqbqOXJGMpW5Unyy521zNr3bcu7vpwtFFFeGfrYUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFereMP8Ak0jwt/2FH/8AQrqvKTXmt5L8eb/wja6DN428PtpVlKZoYPssQ2OdxzuFruP326nHP0r6jh2VGi51q1WMeaLjZt3u2tdttO5/PHjnRzXNaeEyzLcBWqujXpVpTjGPI4xjNOMW5qTl7y0cUv7x6VRVPw7Be22gWMepTR3GoR28a3UsYwskoUb2HA4LZPQfQVcr53EUVSqOCkpW6rb8UvyP3PJsylj8HDFzoTouV/cqJKcbNr3lGUlra6tJ6NbPQKKKKxPUCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP//Z" alt="Minha Imagem">
+    <button onclick="compartilharImagem()">Compartilhar</button>
+
+    <script>
+        function compartilharImagem() {
+            const imagem = document.getElementById('minhaImagem');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = imagem.width;
+            canvas.height = imagem.height;
+            ctx.drawImage(imagem, 0, 0);
+
+            const dataURL = canvas.toDataURL('image/png');
+
+            // Converter o dataURL para um Blob
+            const blob = dataURItoBlob(dataURL);
+
+            // Criar um objeto File
+            const file = new File([blob], 'minha_imagem.png', { type: 'image/png' });
+
+            // Verificar se a API Share é suportada
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Compartilhe esta imagem!',
+                    text: 'Olhe esta imagem incrível!',
+                    files: [file]
+                })
+                .then(() => console.log('Compartilhado com sucesso'))
+                .catch((error) => console.error('Erro ao compartilhar:', error));
+            } else {
+                console.error('O navegador não suporta a API Share.');
+            }
+        }
+
+        // Função auxiliar para converter dataURL para Blob
+        function dataURItoBlob(dataURI) {
+            const byteString = atob(dataURI.split(',')[1]);
+            const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: mimeString });
+        }
+    </script>
+</body>
+</html>
