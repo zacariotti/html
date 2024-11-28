@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compartilhar</title>
+</head>
+<body>
+    <h1>Compartilhe esta página!</h1>
+    <button id="shareButton">Compartilhar</button>
+
+    <script>
+        document.getElementById("shareButton").addEventListener("click", async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Título da página',
+                        text: 'Confira este conteúdo incrível!',
+                        url: window.location.href, // URL da página atual
+                    });
+                    console.log('Compartilhamento bem-sucedido!');
+                } catch (err) {
+                    console.error('Erro ao compartilhar:', err);
+                }
+            } else {
+                alert("A funcionalidade de compartilhamento não está disponível neste dispositivo ou navegador.");
+            }
+        });
+    </script>
+</body>
+</html>
